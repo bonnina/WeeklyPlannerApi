@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WeeklyPlannerApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/todo")]
     [ApiController]
     public class TodoController : ControllerBase
     {
@@ -25,14 +25,14 @@ namespace WeeklyPlannerApi.Controllers
             }
         }
 
-        // GET: api/Todo
+        // GET: api/todo
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             return await _context.TodoItems.ToListAsync();
         }
 
-        // GET: api/Todo/{id}
+        // GET: api/todo/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
         {
@@ -44,6 +44,16 @@ namespace WeeklyPlannerApi.Controllers
             }
 
             return todoItem;
+        }
+
+        // POST: api/todo
+        [HttpPost]
+        public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem item)
+        {
+            _context.TodoItems.Add(item);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetTodoItem), new { id = item.Id }, item);
         }
     }
 }
